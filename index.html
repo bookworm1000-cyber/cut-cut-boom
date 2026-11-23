@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>CUT! CUT! BOOM!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<!-- プレイ中の表示 -->
+<div id="hud" hidden>
+  <div id="score" class="badge">0</div>
+  <div id="order" class="plate"><b>赤</b>を切れ！</div>
+  <div id="stage" class="chip"></div>
+  <button id="pauseBtn" class="small" aria-label="ポーズ">II</button>
+  <button id="btnL" class="side left" aria-label="左の線を切る"><span class="arw">◀</span><span class="key">A</span></button>
+  <button id="btnR" class="side right" aria-label="右の線を切る"><span class="arw">▶</span><span class="key">D</span></button>
+  <div id="labL" class="wlabel" hidden></div>
+  <div id="labR" class="wlabel" hidden></div>
+  <div id="pop" class="pop" hidden>+100</div>
+</div>
+<div id="lowFrame" hidden></div>
+<div id="flash" hidden></div>
+<div id="count" hidden>3</div>
+
+<!-- タイトル -->
+<section id="title" class="screen">
+  <div class="card">
+    <h1 class="logo">CUT!<br>CUT!<br><span>BOOM!</span></h1>
+    <p class="sub">流れてくるダイナマイトの、言われた色の線を切れ。1本でも間違えたら終わり。</p>
+    <div class="modes">
+      <button class="mode" data-mode="easy"><b>EASY</b><small>線に色の名前あり ・ 4.0秒から</small><i data-best="easy"></i></button>
+      <button class="mode dark" data-mode="hard"><b>HARD</b><small>名前なし ・ 3.2秒から</small><i data-best="hard"></i></button>
+    </div>
+    <div class="links"><button data-go="howto">遊び方</button><button data-go="dict">色辞書</button></div>
+  </div>
+</section>
+
+<!-- 遊び方 -->
+<section id="howto" class="screen" hidden>
+  <div class="card text">
+    <h2>遊び方</h2>
+    <ul>
+      <li>上に出る「○○を切れ！」の色の線を、左右どちらか選んで切ります。</li>
+      <li>左の線は <kbd>A</kbd> か <kbd>←</kbd>、右の線は <kbd>D</kbd> か <kbd>→</kbd>。画面の左右のボタンや、スマホなら画面の左半分・右半分のタップでも切れます。</li>
+      <li>ダイナマイトの数字が0になる前に切ってください。間違えるか時間切れで爆発します。</li>
+      <li>切るほど制限時間が短くなり、色も「基本色 → 派生色 → 伝統色 → 珍しい色」と難しくなります。2本の線はだんだん似た色どうしになります。</li>
+      <li><kbd>Esc</kbd> か <kbd>P</kbd> で一時停止。</li>
+    </ul>
+    <div class="row"><button class="primary" id="howtoBtn" data-go="title">もどる</button></div>
+  </div>
+</section>
+
+<!-- 色辞書 -->
+<section id="dict" class="screen" hidden>
+  <div class="card text wide">
+    <h2>色辞書</h2>
+    <p class="note">色名は JIS Z 8102:2001「物体色の色名」の慣用色名です。JISの正式な定義はマンセル値で、HEXはその参考換算値です。HEXは Wikipedia「JIS慣用色名」（版 oldid=111583927）の表の値に固定しています。画面の線はこのHEXのまま表示します。</p>
+    <div id="dictList" class="dlist"></div>
+    <div class="row"><button class="primary" data-go="title">もどる</button></div>
+  </div>
+</section>
+
+<!-- ポーズ -->
+<section id="pause" class="screen dim" hidden>
+  <div class="card small-card">
+    <h2>一時停止</h2>
+    <div class="row col"><button class="primary" id="resume">続ける</button><button id="quit">タイトルへ</button></div>
+  </div>
+</section>
+
+<!-- リザルト -->
+<section id="result" class="screen dim" hidden>
+  <div class="card">
+    <div class="boom">BOOM!</div>
+    <div class="rscore"><span id="rScore">0</span><small id="rMeta"></small></div>
+    <div class="why">
+      <div><span class="lab">切るべきだった色</span><span id="rWant" class="sw"></span></div>
+      <div><span class="lab" id="rGotLab">切った色</span><span id="rGot" class="sw"></span></div>
+    </div>
+    <div class="row col"><button class="primary" id="retry">もう一度<small>Space / Enter</small></button><button id="toTitle">タイトルへ</button></div>
+  </div>
+</section>
+
+<div id="rotate"><div>スマホは横向きにしてください</div></div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
