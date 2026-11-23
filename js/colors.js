@@ -82,10 +82,10 @@ export function deltaE(h1, h2) {
   return Math.sqrt((dL / Sl) ** 2 + (dC / Sc) ** 2 + (dH / Sh) ** 2 + Rt * (dC / Sc) * (dH / Sh));
 }
 
-// near: もう一方の線を「指示の色に近い順で上位何色から選ぶか」。切るほど狭くなり似た色どうしになる
+// near: もう一方の線を、全色のうち指示の色に近い順で上位何色から選ぶか。切るほど狭くなる
 export const MODES = {
-  easy: { label: 'EASY', start: 4.0, min: 1.6, step: 0.06, near: [10, 3], labels: true },
-  hard: { label: 'HARD', start: 3.2, min: 1.1, step: 0.05, near: [6, 1], labels: false },
+  easy: { label: 'EASY', start: 4.0, min: 1.6, step: 0.06, near: [3, 1], labels: true },
+  hard: { label: 'HARD', start: 3.2, min: 1.1, step: 0.05, near: [2, 1], labels: false },
 };
 const RED = COLORS.find(c => c.n === '赤'), BLUE = COLORS.find(c => c.n === '青');
 // 何本切ったかで出てくる色の段階が増える
@@ -95,11 +95,9 @@ export function timeLimit(mode, count) { const m = MODES[mode]; return Math.max(
 export function pickPair(mode, count, rand = Math.random) {
   const side = rand() < 0.5 ? 0 : 1; // 0 = 左が正解
   const make = (target, other) => ({ target, other, side, L: side === 0 ? target : other, R: side === 0 ? other : target });
-  // 赤と青の組は必ず出す（1本目と、その後もときどき）
-  if (count === 0 || rand() < 0.12) return rand() < 0.5 ? make(RED, BLUE) : make(BLUE, RED);
   const ms = maxStage(count), pool = COLORS.filter(c => c.st <= ms);
-  // 新しく増えた段階の色を指示に出しやすくする
-  const weight = c => (c.st === ms && ms > 1 ? 3 : 1);
+  // 赤と青は指示に出やすくし、新しく増えた段階の色も出しやすくする
+  const weight = c => (c === RED || c === BLUE ? 2 : c.st === ms && ms > 1 ? 3 : 1);
   const total = pool.reduce((s, c) => s + weight(c), 0);
   let x = rand() * total, target = pool[0];
   for (const c of pool) { x -= weight(c); if (x <= 0) { target = c; break; } }
